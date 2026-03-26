@@ -91,10 +91,11 @@ export default function TrainingPage() {
 
   const handleUpdate = async (id: string, data: Omit<Session, 'id'>) => {
     if (!user?.uid) return;
+    const existing = sessions.find((s) => s.id === id);
     await set(ref(db, `users/${user.uid}/sessions/${id}`), {
       title: data.title, date: data.date, duration: data.duration,
       notes: data.notes, qualityLevel: data.qualityLevel, tags: data.tags,
-      createdAt: data.createdAt,
+      ...(data.createdAt !== undefined ? { createdAt: data.createdAt } : existing?.createdAt !== undefined ? { createdAt: existing.createdAt } : {}),
     });
     setSessions((p) => p.map((s) => s.id === id ? { ...s, ...data } : s));
   };
