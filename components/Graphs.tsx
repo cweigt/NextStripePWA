@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase';
 import { onValue, ref } from 'firebase/database';
 import { useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import TrainingHeatmap from '@/components/TrainingHeatmap';
 
 interface Session {
   id: string;
@@ -80,6 +81,9 @@ export default function Graphs() {
 
   return (
     <div className="space-y-8 p-6">
+      {/* Training heatmap & streaks */}
+      <TrainingHeatmap sessions={sessions} />
+
       {/* Technique frequency */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <h3 className="text-base font-semibold text-gray-800 mb-4">Technique Frequency</h3>

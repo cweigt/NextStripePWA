@@ -4,7 +4,7 @@
 import EditCompModal from '@/components/EditCompModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
-import { BarChart2, Calendar, Trophy } from 'lucide-react';
+import { BarChart2, Calendar, Flame, Trophy } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { get, onValue, ref, set } from 'firebase/database';
@@ -18,6 +18,8 @@ export default function Dashboard() {
   const [averageRating, setAverageRating] = useState('0');
   const [recentDate, setRecentDate] = useState('');
   const [daysSinceLast, setDaysSinceLast] = useState<number | null>(null);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
   const [maxHours, setMaxHours] = useState('');
   const [winCount, setWinCount] = useState(0);
   const [lossCount, setLossCount] = useState(0);
@@ -47,8 +49,48 @@ export default function Dashboard() {
           setTotalHours(hrs.toFixed(1));
           const avgQ = sessions.reduce((s, se) => s + (parseFloat(se.qualityLevel) || 0), 0) / sessions.length;
           setAverageRating(avgQ.toFixed(1));
+
+          // Build date set (YYYY-MM-DD) for streak calculations
+          const dateSet: Record<string, boolean> = {};
+          sessions.forEach((se: any) => {
+            if (!se.date) return;
+            const parts = se.date.includes('/') ? se.date.split('/') : null;
+            if (!parts) return;
+            const [m, d, y] = parts;
+            dateSet[`${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`] = true;
+          });
+
+          const addDays = (date: Date, n: number) => { const d = new Date(date); d.setDate(d.getDate() + n); return d; };
+          const toYMD = (date: Date) => {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+          };
+
+          const today = new Date(); today.setHours(0, 0, 0, 0);
+          let streak = 0;
+          if (dateSet[toYMD(today)] || dateSet[toYMD(addDays(today, -1))]) {
+            let check = dateSet[toYMD(today)] ? new Date(today) : addDays(today, -1);
+            while (dateSet[toYMD(check)]) { streak++; check = addDays(check, -1); }
+          }
+          setCurrentStreak(streak);
+
+          const sortedDates = Object.keys(dateSet).sort();
+          let longest = 0; let run = 0; let prev: Date | null = null;
+          sortedDates.forEach((ymd) => {
+            const d = new Date(ymd + 'T00:00:00');
+            if (prev) {
+              const diff = Math.round((d.getTime() - prev.getTime()) / 86400000);
+              run = diff === 1 ? run + 1 : 1;
+            } else { run = 1; }
+            longest = Math.max(longest, run);
+            prev = d;
+          });
+          setLongestStreak(longest);
         } else {
           setSessionCount(0); setTotalHours('0'); setAverageRating('0');
+          setCurrentStreak(0); setLongestStreak(0);
         }
       })
     );
@@ -86,7 +128,7 @@ export default function Dashboard() {
         if (qSnap.exists()) { setQuote(qSnap.val()); return; }
       }
       try {
-        const res = await fetch('https://zenquotes.io/api/random');
+        const res = await fetch('/api/quote');
         const data = await res.json();
         const q = Array.isArray(data) && data[0] ? (data[0].a ? `${data[0].q} — ${data[0].a}` : data[0].q) : 'Keep training hard!';
         setQuote(q);
@@ -194,6 +236,31 @@ export default function Dashboard() {
           </div>
         )}
       </section>
+
+      {/* Training Streak */}
+      {(currentStreak > 0 || longestStreak > 0) && (
+        <section className="mb-5">
+          <h2 className="text-base font-semibold text-gray-800 mb-3">
+            <Flame size={16} className="inline mr-1 text-orange-400" />
+            Streak
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100">
+              <div className="flex items-center justify-center gap-1">
+                <p className="text-xl font-bold text-blue-600">{currentStreak}</p>
+                {currentStreak >= 3 && <Flame size={16} className="text-orange-400" />}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Current Streak</p>
+              <p className="text-xs text-gray-400">days</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100">
+              <p className="text-xl font-bold text-gray-900">{longestStreak}</p>
+              <p className="text-xs text-gray-500 mt-1">Best Streak</p>
+              <p className="text-xs text-gray-400">days</p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Competition Stats */}
       <section className="mb-5">
