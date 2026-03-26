@@ -25,6 +25,8 @@ const NAV_ITEMS = [
   { href: '/account', label: 'Account', icon: User },
 ];
 
+const MOBILE_HIDDEN_ROUTES = new Set(['/training', '/analytics']);
+
 export default function Navigation({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, loading } = useAuth();
@@ -85,7 +87,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
       {/* Bottom tabs — mobile only */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-40 pb-safe">
         <div className="flex items-center justify-around h-16 pb-2">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+          {NAV_ITEMS.filter(({ href }) => !MOBILE_HIDDEN_ROUTES.has(href)).map(({ href, label, icon: Icon }) => {
             const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
             return (
               <Link
