@@ -78,25 +78,25 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 md:ml-56 pb-20 md:pb-0 min-h-screen">
+      <main className="flex-1 md:ml-56 pb-28 md:pb-0 min-h-screen">
         {children}
       </main>
 
       {/* Bottom tabs — mobile only */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-40 pb-safe">
-        <div className="flex items-center justify-around h-14">
-          {NAV_ITEMS.slice(0, 5).map(({ href, label, icon: Icon }) => {
+        <div className="flex items-center justify-around h-16 pb-2">
+          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
             const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
             return (
               <Link
                 key={href}
                 href={href}
                 className={cn(
-                  'flex flex-col items-center gap-0.5 px-2 py-1 text-xs',
+                  'flex flex-col items-center gap-0.5 px-1 py-1 text-[10px]',
                   active ? 'text-blue-600' : 'text-gray-500'
                 )}
               >
-                <Icon size={20} />
+                <Icon size={19} />
                 <span>{label}</span>
               </Link>
             );

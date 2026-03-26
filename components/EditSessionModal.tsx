@@ -38,6 +38,24 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
   const [notes, setNotes] = useState('');
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
   const [quality, setQuality] = useState(0);
+  const [summarizing, setSummarizing] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const handleSummarize = async () => {
+    if (!notes.trim()) return;
+    setSummarizing(true);
+    try {
+      const res = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes }),
+      });
+      const data = await res.json();
+      if (data.summary) setNotes(data.summary);
+    } finally {
+      setSummarizing(false);
+    }
+  };
 
   useEffect(() => {
     if (session) {
@@ -47,6 +65,7 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
       setNotes(session.notes || '');
       setSelectedTags(new Set(session.tags || []));
       setQuality(parseFloat(session.qualityLevel) || 0);
+      setConfirmDelete(false);
     }
   }, [session]);
 
@@ -145,7 +164,17 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm font-medium text-gray-700">Notes</label>
+              <button
+                type="button"
+                onClick={handleSummarize}
+                disabled={summarizing || !notes.trim()}
+                className="text-xs font-medium text-blue-500 hover:text-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {summarizing ? 'Summarizing…' : 'Summarize'}
+              </button>
+            </div>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -155,26 +184,47 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
           </div>
         </div>
 
-        <div className="flex gap-3 p-5 border-t border-gray-100">
-          <button
-            onClick={() => { onDelete(session.id); onClose(); }}
-            className="py-2.5 px-4 border border-red-200 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50"
-          >
-            Delete
-          </button>
-          <button
-            onClick={onClose}
-            className="flex-1 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            className="flex-1 py-2.5 bg-blue-500 rounded-lg text-sm font-medium text-white hover:bg-blue-600"
-          >
-            Save
-          </button>
-        </div>
+        {confirmDelete ? (
+          <div className="p-5 border-t border-gray-100 space-y-3">
+            <p className="text-sm text-gray-700 font-medium">Delete this session?</p>
+            <p className="text-xs text-gray-400">This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="flex-1 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => { onDelete(session.id); onClose(); }}
+                className="flex-1 py-2.5 bg-red-500 rounded-lg text-sm font-medium text-white hover:bg-red-600"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex gap-3 p-5 border-t border-gray-100">
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="py-2.5 px-4 border border-red-200 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50"
+            >
+              Delete
+            </button>
+            <button
+              onClick={onClose}
+              className="flex-1 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              className="flex-1 py-2.5 bg-blue-500 rounded-lg text-sm font-medium text-white hover:bg-blue-600"
+            >
+              Save
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

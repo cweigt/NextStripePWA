@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
-import { get, ref } from 'firebase/database';
+import { onValue, ref } from 'firebase/database';
 import { useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
@@ -16,6 +16,7 @@ interface Session {
 
 function buildTagData(sessions: Session[]) {
   const freq: Record<string, number> = {};
+  const total = sessions.length;
   sessions.forEach((s) => {
     const tags = Array.isArray(s.tags) ? s.tags : Object.values(s.tags || {});
     tags.forEach((t) => {
@@ -23,8 +24,8 @@ function buildTagData(sessions: Session[]) {
     });
   });
   return Object.entries(freq)
-    .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => b.count - a.count);
+    .map(([tag, count]) => ({ tag, count, pct: total > 0 ? parseFloat(((count / total) * 100).toFixed(1)) : 0 }))
+    .sort((a, b) => b.pct - a.pct);
 }
 
 const COLORS = [
@@ -39,14 +40,17 @@ export default function Graphs() {
 
   useEffect(() => {
     if (!user?.uid) { setLoading(false); return; }
-    get(ref(db, `users/${user.uid}/sessions`)).then((snap) => {
+    const unsub = onValue(ref(db, `users/${user.uid}/sessions`), (snap) => {
       if (snap.exists()) {
         const raw = snap.val() as Record<string, any>;
         setSessions(Object.entries(raw).map(([id, s]) => ({ id, ...s })));
+      } else {
+        setSessions([]);
       }
       setLoading(false);
     });
-  }, [user]);
+    return () => unsub();
+  }, [user?.uid]);
 
   const tagData = useMemo(() => buildTagData(sessions), [sessions]);
 
@@ -87,13 +91,13 @@ export default function Graphs() {
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={tagData} layout="vertical" margin={{ left: 10, right: 20 }}>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 12 }} />
+              <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 12 }} />
               <YAxis type="category" dataKey="tag" tick={{ fontSize: 11 }} width={130} />
               <Tooltip
-                formatter={(value) => [`${value} sessions`, 'Count']}
+                formatter={(value, _name, props) => [`${value}% (${props.payload.count} sessions)`, 'Frequency']}
                 contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 13 }}
               />
-              <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+              <Bar dataKey="pct" radius={[0, 4, 4, 0]}>
                 {tagData.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}

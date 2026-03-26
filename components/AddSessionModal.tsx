@@ -28,6 +28,23 @@ export default function AddSessionModal({ isOpen, onClose, onSave }: Props) {
   const [notes, setNotes] = useState('');
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
   const [quality, setQuality] = useState(0);
+  const [summarizing, setSummarizing] = useState(false);
+
+  const handleSummarize = async () => {
+    if (!notes.trim()) return;
+    setSummarizing(true);
+    try {
+      const res = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes }),
+      });
+      const data = await res.json();
+      if (data.summary) setNotes(data.summary);
+    } finally {
+      setSummarizing(false);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -138,7 +155,17 @@ export default function AddSessionModal({ isOpen, onClose, onSave }: Props) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Session Notes</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm font-medium text-gray-700">Session Notes</label>
+              <button
+                type="button"
+                onClick={handleSummarize}
+                disabled={summarizing || !notes.trim()}
+                className="text-xs font-medium text-blue-500 hover:text-blue-700 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {summarizing ? 'Summarizing…' : 'Summarize'}
+              </button>
+            </div>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
