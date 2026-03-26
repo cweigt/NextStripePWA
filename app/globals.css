@@ -54,6 +54,13 @@ body {
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
+/* Hide on desktop (sidebar handles navigation) */
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
 /* PWA safe areas */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .pb-safe {

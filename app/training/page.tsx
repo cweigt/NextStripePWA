@@ -4,7 +4,8 @@ import AddSessionModal from '@/components/AddSessionModal';
 import EditSessionModal from '@/components/EditSessionModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
-import { ChevronUp, Filter, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronUp, Filter, Plus } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { get, ref, remove, set } from 'firebase/database';
 
@@ -119,6 +120,9 @@ export default function TrainingPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8" ref={scrollRef}>
       {/* Header */}
+      <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3">
+        <ChevronLeft size={16} /> Back to Dashboard
+      </Link>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Training Log</h1>
         <button

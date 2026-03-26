@@ -3,6 +3,7 @@ import withPWA from '@ducanh2912/next-pwa';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  allowedDevOrigins: ['172.31.219.146'],
 };
 
 export default withPWA({
