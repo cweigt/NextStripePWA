@@ -4,7 +4,13 @@
 import EditCompModal from '@/components/EditCompModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase';
-import { BarChart2, Calendar, Flame, Trophy } from 'lucide-react';
+import { 
+  BarChart2, 
+  Calendar, 
+  Flame, 
+  Trophy, 
+  Bandage } 
+from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { get, onValue, ref, set } from 'firebase/database';
@@ -195,6 +201,9 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 gap-3 mb-6 mobile-only">
         <Link href="/training" className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-3 text-sm font-semibold hover:bg-gray-50 transition-colors">
           <Calendar size={16} /> Training Log
+        </Link>
+        <Link href="/injury" className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-3 text-sm font-semibold hover:bg-gray-50 transition-colors">
+          <Bandage size={16} /> Injury Log
         </Link>
         <Link href="/analytics" className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-3 text-sm font-semibold hover:bg-gray-50 transition-colors">
           <BarChart2 size={16} /> View Analytics
