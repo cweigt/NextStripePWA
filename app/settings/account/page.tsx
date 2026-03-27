@@ -13,17 +13,6 @@ import { useEffect, useState } from 'react';
 const BELTS = ['White Belt', 'Blue Belt', 'Purple Belt', 'Brown Belt', 'Black Belt'];
 const STRIPES = ['0 Stripe', '1st Stripe', '2nd Stripe', '3rd Stripe', '4th Stripe'];
 
-function getBeltColor(belt: string): string {
-  const colors: Record<string, string> = {
-    'White Belt': '#f9f9f9',
-    'Blue Belt': '#1a6fcd',
-    'Purple Belt': '#7e22ce',
-    'Brown Belt': '#92400e',
-    'Black Belt': '#1f2937',
-  };
-  return colors[belt] ?? '#e5e7eb';
-}
-
 export default function AccountSettingsPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -134,19 +123,13 @@ export default function AccountSettingsPage() {
         <h2 className="text-xl font-bold text-gray-900">{user.displayName || 'Athlete'}</h2>
         <p className="text-sm text-gray-500 mt-0.5">{user.email}</p>
 
-        {beltRank && (
+        {beltRank && stripeCount && (
           <div className="mt-4 flex items-center justify-center gap-3">
-            <div
-              className="h-5 w-32 rounded-full border border-gray-200 flex items-center justify-center"
-              style={{ backgroundColor: getBeltColor(beltRank) }}
-            >
-              <div className="flex gap-1">
-                {Array.from({ length: STRIPES.indexOf(stripeCount) }).map((_, i) => (
-                  <div key={i} className="w-2 h-3 bg-white/80 rounded-sm" />
-                ))}
-              </div>
-            </div>
-            <span className="text-sm font-medium text-gray-700">{beltRank} • {stripeCount}</span>
+            <img
+              src={`/${beltRank.split(' ')[0].toLowerCase()}-${STRIPES.indexOf(stripeCount)}.png`}
+              alt={`${beltRank} belt ${stripeCount}`}
+              className="h-8 w-auto"
+            />
           </div>
         )}
       </div>
@@ -202,7 +185,7 @@ export default function AccountSettingsPage() {
             { label: 'Training Since (e.g. Jan 2020)', value: trainingDate, setter: setTrainingDate },
             { label: 'Gender', value: gender, setter: setGender },
             { label: 'Weight (lbs)', value: weight, setter: setWeight },
-            { label: 'Height', value: height, setter: setHeight },
+            { label: `Height (5' 4")`, value: height, setter: setHeight },
           ].map(({ label, value, setter }) => (
             <div key={label}>
               <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
