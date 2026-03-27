@@ -49,6 +49,57 @@ body {
   padding: 1rem;
 }
 
+/* ── Animation keyframes ── */
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes backdropFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes modalSlideUp {
+  from { transform: translateY(56px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes modalSlideDown {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(56px); opacity: 0; }
+}
+@keyframes pageSlideInRight {
+  from { transform: translateX(28px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes pageSlideInUp {
+  from { transform: translateY(14px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Backdrop states */
+.modal-backdrop-enter {
+  animation: backdropFadeIn 0.22s ease;
+}
+.modal-backdrop-exit {
+  animation: backdropFadeOut 0.22s ease forwards;
+  pointer-events: none;
+}
+
+/* Modal inner panel states */
+.modal-inner-enter {
+  animation: modalSlideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.modal-inner-exit {
+  animation: modalSlideDown 0.22s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* Page transitions */
+.page-enter-right {
+  animation: pageSlideInRight 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.page-enter-up {
+  animation: pageSlideInUp 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
 /* Smooth transitions */
 .nav-link {
   transition: background-color 0.15s ease, color 0.15s ease;

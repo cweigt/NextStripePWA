@@ -45,7 +45,17 @@ export default function LibraryPage() {
     if (!user?.uid) return;
     try {
       if (video.videoUrl) {
-        try { await deleteObject(storageRef(storage, video.videoUrl)); } catch {}
+        try {
+          // Extract the storage path from the download URL
+          const url = new URL(video.videoUrl);
+          const pathMatch = url.pathname.match(/\/o\/(.+)$/);
+          if (pathMatch) {
+            const storagePath = decodeURIComponent(pathMatch[1]);
+            await deleteObject(storageRef(storage, storagePath));
+          }
+        } catch (e) {
+          console.error('Storage delete failed:', e);
+        }
       }
       await remove(ref(db, `users/${user.uid}/library/videos/${video.id}`));
       setConfirmDelete(null);
@@ -153,7 +163,7 @@ export default function LibraryPage() {
         </div>
       )}
 
-      <AddVideoModal isOpen={addOpen} onClose={() => setAddOpen(false)} userId={user.uid} onSave={(v) => setVideos((p) => [v, ...p])} />
+      <AddVideoModal isOpen={addOpen} onClose={() => setAddOpen(false)} userId={user.uid} onSave={() => setAddOpen(false)} />
     </div>
   );
 }

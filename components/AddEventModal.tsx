@@ -1,7 +1,7 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Props {
   isOpen: boolean;
@@ -22,8 +22,26 @@ export default function AddEventModal({ isOpen, onClose, defaultDate, onSave }: 
   const [recurring, setRecurring] = useState(false);
   const [recurrenceType, setRecurrenceType] = useState<'daily' | 'weekly' | 'monthly' | 'yearly' | 'none'>('weekly');
   const [endDate, setEndDate] = useState('');
+  const [shouldRender, setShouldRender] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true);
+      setIsClosing(false);
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
+    if (isClosing) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      setShouldRender(false);
+      onClose();
+    }, 220);
+  };
+
+  if (!shouldRender) return null;
 
   const handleSave = () => {
     if (!title.trim()) return;
@@ -47,12 +65,15 @@ export default function AddEventModal({ isOpen, onClose, defaultDate, onSave }: 
     setRecurring(false);
     setRecurrenceType('weekly');
     setEndDate('');
-    onClose();
+    handleClose();
   };
 
   return (
-    <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && reset()}>
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
+    <div
+      className={`modal-backdrop ${isClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`}
+      onClick={(e) => e.target === e.currentTarget && reset()}
+    >
+      <div className={`bg-white rounded-2xl w-full max-w-md shadow-xl ${isClosing ? 'modal-inner-exit' : 'modal-inner-enter'}`}>
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <h2 className="text-lg font-semibold">Add Event</h2>
           <button onClick={reset} className="p-1 rounded-full hover:bg-gray-100">

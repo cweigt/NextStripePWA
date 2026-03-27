@@ -4,7 +4,7 @@ import { db, storage } from '@/lib/firebase';
 import { ref as dbRef, set } from 'firebase/database';
 import { getDownloadURL, ref as storageRef, uploadBytesResumable } from 'firebase/storage';
 import { Upload, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   isOpen: boolean;
@@ -22,8 +22,26 @@ export default function AddVideoModal({ isOpen, onClose, userId, onSave }: Props
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
+  const [shouldRender, setShouldRender] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true);
+      setIsClosing(false);
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
+    if (isClosing || uploading) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      setShouldRender(false);
+      onClose();
+    }, 220);
+  };
+
+  if (!shouldRender) return null;
 
   const reset = () => {
     setTitle('');
@@ -32,7 +50,7 @@ export default function AddVideoModal({ isOpen, onClose, userId, onSave }: Props
     setFile(null);
     setProgress(0);
     setError('');
-    onClose();
+    handleClose();
   };
 
   const handleUpload = () => {
@@ -45,7 +63,7 @@ export default function AddVideoModal({ isOpen, onClose, userId, onSave }: Props
     setError('');
 
     const videoId = Date.now().toString();
-    const path = `users/${userId}/videos/${videoId}_${file.name}`;
+    const path = `videos/${userId}/${videoId}_${file.name}`;
     const sRef = storageRef(storage, path);
     const uploadTask = uploadBytesResumable(sRef, file);
 
@@ -53,7 +71,16 @@ export default function AddVideoModal({ isOpen, onClose, userId, onSave }: Props
       'state_changed',
       (snap) => setProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
       (err) => {
-        setError('Upload failed. Please try again.');
+        console.error('Firebase upload error:', err.code, err.message);
+        const msg =
+          err.code === 'storage/unauthorized'
+            ? 'Upload failed: permission denied. Check Firebase Storage rules.'
+            : err.code === 'storage/quota-exceeded'
+            ? 'Upload failed: storage quota exceeded.'
+            : err.code === 'storage/unauthenticated'
+            ? 'Upload failed: you must be signed in.'
+            : `Upload failed (${err.code ?? err.message}). Please try again.`;
+        setError(msg);
         setUploading(false);
       },
       async () => {
@@ -68,8 +95,11 @@ export default function AddVideoModal({ isOpen, onClose, userId, onSave }: Props
   };
 
   return (
-    <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && !uploading && reset()}>
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
+    <div
+      className={`modal-backdrop ${isClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`}
+      onClick={(e) => e.target === e.currentTarget && !uploading && reset()}
+    >
+      <div className={`bg-white rounded-2xl w-full max-w-md shadow-xl ${isClosing ? 'modal-inner-exit' : 'modal-inner-enter'}`}>
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <h2 className="text-lg font-semibold">Add Video</h2>
           {!uploading && (

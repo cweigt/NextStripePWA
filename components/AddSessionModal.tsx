@@ -29,6 +29,8 @@ export default function AddSessionModal({ isOpen, onClose, onSave }: Props) {
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
   const [quality, setQuality] = useState(0);
   const [summarizing, setSummarizing] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const handleSummarize = async () => {
     if (!notes.trim()) return;
@@ -49,8 +51,19 @@ export default function AddSessionModal({ isOpen, onClose, onSave }: Props) {
   useEffect(() => {
     if (isOpen) {
       setDate(format(new Date(), 'yyyy-MM-dd'));
+      setShouldRender(true);
+      setIsClosing(false);
     }
   }, [isOpen]);
+
+  const handleClose = () => {
+    if (isClosing) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      setShouldRender(false);
+      onClose();
+    }, 220);
+  };
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) => {
@@ -75,14 +88,17 @@ export default function AddSessionModal({ isOpen, onClose, onSave }: Props) {
     setNotes('');
     setSelectedTags(new Set());
     setQuality(0);
-    onClose();
+    handleClose();
   };
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   return (
-    <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && reset()}>
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-xl">
+    <div
+      className={`modal-backdrop ${isClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`}
+      onClick={(e) => e.target === e.currentTarget && reset()}
+    >
+      <div className={`bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-xl ${isClosing ? 'modal-inner-exit' : 'modal-inner-enter'}`}>
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <h2 className="text-lg font-semibold">Add Training Session</h2>

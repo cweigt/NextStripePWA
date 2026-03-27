@@ -281,7 +281,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-3 gap-3 mb-3">
           <button
             onClick={() => setCompModal({ open: true, type: 'win' })}
-            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:border-green-200 transition-colors"
+            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:bg-gray-50 hover:border-green-200 transition-colors"
           >
             <p className="text-xs text-gray-400 italic mb-0.5">Add Result</p>
             <p className="text-xl font-bold text-green-500">{winCount}</p>
@@ -289,7 +289,7 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => decrement('comp/wins', winCount, setWinCount).then(() => decrement('comp/submissionWins', submissionWins, setSubmissionWins))}
-            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:border-green-100 transition-colors"
+            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:bg-gray-50 hover:border-green-100 transition-colors"
           >
             <p className="text-xs text-gray-400 italic mb-0.5">Click to Undo</p>
             <p className="text-xl font-bold text-green-400">{submissionWins}</p>
@@ -297,7 +297,7 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => decrement('comp/wins', winCount, setWinCount).then(() => decrement('comp/pointsWins', pointsWins, setPointsWins))}
-            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:border-green-100 transition-colors"
+            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:bg-gray-50 hover:border-green-100 transition-colors"
           >
             <p className="text-xs text-gray-400 italic mb-0.5">Click to Undo</p>
             <p className="text-xl font-bold text-green-400">{pointsWins}</p>
@@ -307,7 +307,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-3 gap-3">
           <button
             onClick={() => setCompModal({ open: true, type: 'loss' })}
-            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:border-red-200 transition-colors"
+            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:bg-gray-50 hover:border-red-200 transition-colors"
           >
             <p className="text-xs text-gray-400 italic mb-0.5">Add Result</p>
             <p className="text-xl font-bold text-red-500">{lossCount}</p>
@@ -315,7 +315,7 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => decrement('comp/losses', lossCount, setLossCount).then(() => decrement('comp/submissionLosses', submissionLosses, setSubmissionLosses))}
-            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:border-red-100 transition-colors"
+            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:bg-gray-50 hover:border-red-100 transition-colors"
           >
             <p className="text-xs text-gray-400 italic mb-0.5">Click to Undo</p>
             <p className="text-xl font-bold text-red-400">{submissionLosses}</p>
@@ -323,7 +323,7 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => decrement('comp/losses', lossCount, setLossCount).then(() => decrement('comp/pointsLosses', pointsLosses, setPointsLosses))}
-            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:border-red-100 transition-colors"
+            className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 hover:bg-gray-50 hover:border-red-100 transition-colors"
           >
             <p className="text-xs text-gray-400 italic mb-0.5">Click to Undo</p>
             <p className="text-xl font-bold text-red-400">{pointsLosses}</p>
