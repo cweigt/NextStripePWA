@@ -27,6 +27,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            var theme = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (theme === 'dark' || (!theme || theme === 'system') && prefersDark) {
+              document.documentElement.classList.add('dark');
+            }
+          })();
+        `}} />
       </head>
       <body>
         <AuthProvider>

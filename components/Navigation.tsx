@@ -9,8 +9,8 @@ import {
   Home,
   LayoutDashboard,
   LogIn,
+  Settings,
   Target,
-  User,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -22,7 +22,7 @@ const NAV_ITEMS = [
   { href: '/library', label: 'Library', icon: BookOpen },
   { href: '/challenges', label: 'Challenges', icon: Target },
   { href: '/analytics', label: 'Analytics', icon: BarChart2 },
-  { href: '/account', label: 'Account', icon: User },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
 const MOBILE_HIDDEN_ROUTES = new Set(['/training', '/analytics']);

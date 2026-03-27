@@ -2,9 +2,9 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { auth, db } from '@/lib/firebase';
-import { deleteUser, signOut, updateProfile } from 'firebase/auth';
+import { deleteUser, signOut } from 'firebase/auth';
 import { get, ref, set } from 'firebase/database';
-import { Camera, ChevronRight, LogOut, Trash2, User } from 'lucide-react';
+import { ArrowLeft, ChevronRight, LogOut, Trash2, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ function getBeltColor(belt: string): string {
   return colors[belt] ?? '#e5e7eb';
 }
 
-export default function AccountPage() {
+export default function AccountSettingsPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -90,7 +90,7 @@ export default function AccountPage() {
     try {
       await deleteUser(user);
       router.push('/auth');
-    } catch (e: any) {
+    } catch {
       alert('Please re-sign-in before deleting your account.');
     }
   };
@@ -110,10 +110,18 @@ export default function AccountPage() {
     );
   }
 
-  const beltKey = beltRank && stripeCount ? `${beltRank.toLowerCase().replace(' ', '-')}-${STRIPES.indexOf(stripeCount)}` : null;
-
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
+      {/* Back button */}
+      <Link
+        href="/settings"
+        className="flex items-center gap-1.5 text-sm text-blue-500 hover:text-blue-600 mb-6"
+      >
+        <ArrowLeft size={16} /> Settings
+      </Link>
+
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Account</h1>
+
       {/* Profile header */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-5 text-center">
         <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -126,7 +134,6 @@ export default function AccountPage() {
         <h2 className="text-xl font-bold text-gray-900">{user.displayName || 'Athlete'}</h2>
         <p className="text-sm text-gray-500 mt-0.5">{user.email}</p>
 
-        {/* Belt display */}
         {beltRank && (
           <div className="mt-4 flex items-center justify-center gap-3">
             <div
@@ -144,7 +151,7 @@ export default function AccountPage() {
         )}
       </div>
 
-      {/* Info cards */}
+      {/* Info cards / edit form */}
       {!editing ? (
         <>
           <div className="grid grid-cols-2 gap-3 mb-5">
