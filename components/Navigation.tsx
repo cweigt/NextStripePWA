@@ -80,7 +80,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 md:ml-56 pb-28 md:pb-0 min-h-screen">
+      <main key={pathname} className="flex-1 md:ml-56 pb-28 md:pb-0 min-h-screen page-enter-right">
         {children}
       </main>
 

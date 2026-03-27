@@ -12,7 +12,7 @@ import {
   isSameDay,
   startOfWeek,
 } from 'date-fns';
-import { onValue, push, ref, remove, set } from 'firebase/database';
+import { onValue, push, ref, remove, set, update } from 'firebase/database';
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -69,7 +69,7 @@ export default function SchedulePage() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [eventDays, setEventDays] = useState<Record<string, number>>({});
   const [addOpen, setAddOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
 
   // Generate week days from offset
   const weekDays = useMemo(() => {
@@ -131,6 +131,19 @@ export default function SchedulePage() {
     if (!user?.uid) return;
     await remove(ref(db, `users/${user.uid}/schedule/${dateKey(selected)}/${id}`));
   };
+
+  const handleUpdate = useCallback(async ({ title, time, recurring, recurrenceType }: any) => {
+    if (!user?.uid || !editingEvent) return;
+    const start = new Date(selected);
+    start.setHours(time.getHours(), time.getMinutes(), 0, 0);
+    await update(ref(db, `users/${user.uid}/schedule/${dateKey(selected)}/${editingEvent.id}`), {
+      title,
+      startISO: start.toISOString(),
+      recurring,
+      recurrenceType: recurring ? recurrenceType : 'none',
+    });
+    setEditingEvent(null);
+  }, [user?.uid, selected, editingEvent]);
 
   if (!user) {
     return <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view your schedule.</div>;
@@ -196,7 +209,11 @@ export default function SchedulePage() {
         ) : (
           <div className="space-y-2">
             {events.map((ev) => (
-              <div key={ev.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center justify-between gap-3">
+              <div
+                key={ev.id}
+                onClick={() => setEditingEvent(ev)}
+                className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center justify-between gap-3 cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              >
                 <div>
                   <p className="font-semibold text-gray-900">{ev.title}</p>
                   <p className="text-xs text-gray-500 mt-0.5">
@@ -206,7 +223,10 @@ export default function SchedulePage() {
                     )}
                   </p>
                 </div>
-                <button onClick={() => handleDelete(ev.id)} className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-lg transition-colors">
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleDelete(ev.id); }}
+                  className="p-2 text-gray-300 hover:text-red-400 hover:bg-red-50 rounded-lg transition-colors"
+                >
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -220,6 +240,14 @@ export default function SchedulePage() {
         onClose={() => setAddOpen(false)}
         defaultDate={selected}
         onSave={saveEvent}
+      />
+
+      <AddEventModal
+        isOpen={Boolean(editingEvent)}
+        onClose={() => setEditingEvent(null)}
+        defaultDate={selected}
+        onSave={handleUpdate}
+        initialData={editingEvent}
       />
     </div>
   );
