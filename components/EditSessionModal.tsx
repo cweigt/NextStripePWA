@@ -213,7 +213,7 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
                 Cancel
               </button>
               <button
-                onClick={() => { onDelete(session.id); handleClose(); }}
+                onClick={() => { if (session) { onDelete(session.id); handleClose(); } }}
                 className="flex-1 py-2.5 bg-red-500 rounded-lg text-sm font-medium text-white hover:bg-red-600"
               >
                 Yes, Delete
