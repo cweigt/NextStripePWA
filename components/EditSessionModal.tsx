@@ -93,6 +93,7 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
   };
 
   const handleSave = () => {
+    if (!session) return;
     const [y, m, d] = date.split('-');
     const formattedDate = `${m}/${d}/${y}`;
     onSave(session.id, {
