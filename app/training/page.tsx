@@ -191,7 +191,7 @@ export default function TrainingPage() {
             <button
               key={session.id}
               onClick={() => setEditing(session)}
-              className="w-full bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-left hover:border-blue-200 transition-colors"
+              className="w-full bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-left hover:border-blue-200 hover:bg-gray-50 transition-colors"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
