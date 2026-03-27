@@ -40,6 +40,8 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
   const [quality, setQuality] = useState(0);
   const [summarizing, setSummarizing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const handleSummarize = async () => {
     if (!notes.trim()) return;
@@ -66,10 +68,21 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
       setSelectedTags(new Set(session.tags || []));
       setQuality(parseFloat(session.qualityLevel) || 0);
       setConfirmDelete(false);
+      setShouldRender(true);
+      setIsClosing(false);
     }
   }, [session]);
 
-  if (!session) return null;
+  const handleClose = () => {
+    if (isClosing) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      setShouldRender(false);
+      onClose();
+    }, 220);
+  };
+
+  if (!shouldRender) return null;
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) => {
@@ -90,15 +103,18 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
       tags: Array.from(selectedTags),
       qualityLevel: quality.toString(),
     });
-    onClose();
+    handleClose();
   };
 
   return (
-    <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-xl">
+    <div
+      className={`modal-backdrop ${isClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`}
+      onClick={(e) => e.target === e.currentTarget && handleClose()}
+    >
+      <div className={`bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-xl ${isClosing ? 'modal-inner-exit' : 'modal-inner-enter'}`}>
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <h2 className="text-lg font-semibold">Edit Session</h2>
-          <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-100">
+          <button onClick={handleClose} className="p-1 rounded-full hover:bg-gray-100">
             <X size={20} className="text-gray-500" />
           </button>
         </div>
@@ -196,7 +212,7 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
                 Cancel
               </button>
               <button
-                onClick={() => { onDelete(session.id); onClose(); }}
+                onClick={() => { onDelete(session.id); handleClose(); }}
                 className="flex-1 py-2.5 bg-red-500 rounded-lg text-sm font-medium text-white hover:bg-red-600"
               >
                 Yes, Delete
@@ -212,7 +228,7 @@ export default function EditSessionModal({ session, onClose, onSave, onDelete }:
               Delete
             </button>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
             >
               Cancel
