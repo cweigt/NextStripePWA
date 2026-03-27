@@ -205,7 +205,17 @@ export default function Dashboard() {
       {quote && (
         <div className="bg-white border-l-4 border-blue-500 rounded-xl p-4 mb-5 shadow-sm">
           <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Daily Inspiration</p>
-          <p className="text-sm text-gray-700 italic leading-relaxed">"{quote}"</p>
+          {(() => {
+            const dashIdx = quote.lastIndexOf(' — ');
+            const text = dashIdx !== -1 ? quote.slice(0, dashIdx) : quote;
+            const author = dashIdx !== -1 ? quote.slice(dashIdx + 3) : null;
+            return (
+              <>
+                <p className="text-sm text-gray-700 italic leading-relaxed">"{text}"</p>
+                {author && <p className="text-xs text-gray-500 mt-1.5">— {author}</p>}
+              </>
+            );
+          })()}
         </div>
       )}
 
