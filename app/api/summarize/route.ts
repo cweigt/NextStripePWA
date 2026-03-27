@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
           {
             role: 'system',
             content:
-              'You are a martial arts training assistant. Summarize the user\'s session notes into 2-3 concise sentences, preserving the key techniques, observations, and takeaways. Keep the tone first-person.',
+              'You are a martial arts training assistant. Summarize the user\'s session notes into 2-3 concise sentences with an additional 2-3 bullet points, preserving the key techniques, observations, and takeaways. Keep the tone first-person.',
           },
           { role: 'user', content: notes },
         ],
