@@ -3,20 +3,31 @@
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+interface EventData {
+  title: string;
+  time: Date;
+  recurring?: boolean;
+  recurrenceType?: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'none';
+  recurrenceEndDate?: Date | null;
+}
+
+interface InitialData {
+  title: string;
+  startISO: string;
+  recurring?: boolean;
+  recurrenceType?: string;
+  recurrenceEndDate?: string;
+}
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   defaultDate: Date;
-  onSave: (data: {
-    title: string;
-    time: Date;
-    recurring?: boolean;
-    recurrenceType?: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'none';
-    recurrenceEndDate?: Date | null;
-  }) => void;
+  onSave: (data: EventData) => void;
+  initialData?: InitialData | null;
 }
 
-export default function AddEventModal({ isOpen, onClose, defaultDate, onSave }: Props) {
+export default function AddEventModal({ isOpen, onClose, defaultDate, onSave, initialData }: Props) {
   const [title, setTitle] = useState('');
   const [time, setTime] = useState('09:00');
   const [recurring, setRecurring] = useState(false);
@@ -25,12 +36,28 @@ export default function AddEventModal({ isOpen, onClose, defaultDate, onSave }: 
   const [shouldRender, setShouldRender] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
+  const isEditing = Boolean(initialData);
+
   useEffect(() => {
     if (isOpen) {
       setShouldRender(true);
       setIsClosing(false);
+      if (initialData) {
+        setTitle(initialData.title);
+        const d = new Date(initialData.startISO);
+        setTime(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
+        setRecurring(Boolean(initialData.recurring));
+        setRecurrenceType((initialData.recurrenceType as any) || 'weekly');
+        setEndDate(initialData.recurrenceEndDate ? initialData.recurrenceEndDate.split('T')[0] : '');
+      } else {
+        setTitle('');
+        setTime('09:00');
+        setRecurring(false);
+        setRecurrenceType('weekly');
+        setEndDate('');
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, initialData]);
 
   const handleClose = () => {
     if (isClosing) return;
@@ -75,7 +102,7 @@ export default function AddEventModal({ isOpen, onClose, defaultDate, onSave }: 
     >
       <div className={`bg-white rounded-2xl w-full max-w-md shadow-xl ${isClosing ? 'modal-inner-exit' : 'modal-inner-enter'}`}>
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
-          <h2 className="text-lg font-semibold">Add Event</h2>
+          <h2 className="text-lg font-semibold">{isEditing ? 'Edit Event' : 'Add Event'}</h2>
           <button onClick={reset} className="p-1 rounded-full hover:bg-gray-100">
             <X size={20} className="text-gray-500" />
           </button>
@@ -147,7 +174,7 @@ export default function AddEventModal({ isOpen, onClose, defaultDate, onSave }: 
             Cancel
           </button>
           <button onClick={handleSave} className="flex-1 py-2.5 bg-blue-500 rounded-lg text-sm font-medium text-white hover:bg-blue-600">
-            Add Event
+            {isEditing ? 'Save Changes' : 'Add Event'}
           </button>
         </div>
       </div>
