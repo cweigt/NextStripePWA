@@ -11,6 +11,7 @@ import {
   LogIn,
   Settings,
   Target,
+  Bandage,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -18,6 +19,7 @@ import { usePathname } from 'next/navigation';
 const NAV_ITEMS = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/training', label: 'Training', icon: Home },
+  { href: '/injury', label: 'Injury', icon: Bandage},
   { href: '/schedule', label: 'Schedule', icon: Calendar },
   { href: '/library', label: 'Library', icon: BookOpen },
   { href: '/challenges', label: 'Challenges', icon: Target },
@@ -25,7 +27,7 @@ const NAV_ITEMS = [
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
-const MOBILE_HIDDEN_ROUTES = new Set(['/training', '/analytics']);
+const MOBILE_HIDDEN_ROUTES = new Set(['/training', '/analytics', '/injury']);
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
