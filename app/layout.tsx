@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'NextStripe',
   },
+  icons: {
+    icon: '/icons/favicon.png',
+  },
 };
 
 export const viewport: Viewport = {
