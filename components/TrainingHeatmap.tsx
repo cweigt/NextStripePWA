@@ -141,7 +141,7 @@ export default function TrainingHeatmap({ sessions }: Props) {
   const DAY_INITIALS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+    <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
       <h3 className="text-base font-semibold text-gray-800 mb-5">
         Training Activity <span className="text-gray-400 font-normal">{new Date().getFullYear()}</span>
       </h3>
