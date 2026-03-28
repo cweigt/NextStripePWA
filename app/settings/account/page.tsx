@@ -126,7 +126,7 @@ export default function AccountSettingsPage() {
         {beltRank && stripeCount && (
           <div className="mt-4 flex items-center justify-center gap-3">
             <img
-              src={`/${beltRank.split(' ')[0].toLowerCase()}-${STRIPES.indexOf(stripeCount)}.png`}
+              src={`/belts/${beltRank.split(' ')[0].toLowerCase()}-${STRIPES.indexOf(stripeCount)}.png`}
               alt={`${beltRank} belt ${stripeCount}`}
               className="h-8 w-auto"
             />
