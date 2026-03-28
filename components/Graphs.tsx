@@ -80,23 +80,24 @@ export default function Graphs() {
   }
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-6">
       {/* Training heatmap & streaks */}
       <TrainingHeatmap sessions={sessions} />
 
       {/* Technique frequency */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 overflow-hidden">
         <h3 className="text-base font-semibold text-gray-800 mb-4">Technique Frequency</h3>
         {tagData.length === 0 ? (
           <p className="text-sm text-gray-400 text-center py-8">
             Log sessions with tags to see technique stats
           </p>
         ) : (
-          <ResponsiveContainer width="100%" height={300}>
+          <div className="w-full">
+          <ResponsiveContainer width="99%" height={300}>
             <BarChart data={tagData} layout="vertical" margin={{ left: 10, right: 20 }}>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} />
               <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 12 }} />
-              <YAxis type="category" dataKey="tag" tick={{ fontSize: 11 }} width={130} />
+              <YAxis type="category" dataKey="tag" tick={{ fontSize: 11 }} width={90} />
               <Tooltip
                 formatter={(value, _name, props) => [`${value}% (${props.payload.count} sessions)`, 'Frequency']}
                 contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 13 }}
@@ -108,18 +109,20 @@ export default function Graphs() {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+          </div>
         )}
       </div>
 
       {/* Average quality per month */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 overflow-hidden">
         <h3 className="text-base font-semibold text-gray-800 mb-4">Avg Session Quality (Last 6 Months)</h3>
         {qualityData.length === 0 ? (
           <p className="text-sm text-gray-400 text-center py-8">
             Not enough session data yet
           </p>
         ) : (
-          <ResponsiveContainer width="100%" height={220}>
+          <div className="w-full">
+          <ResponsiveContainer width="99%" height={220}>
             <BarChart data={qualityData} margin={{ left: -10 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 12 }} />
@@ -131,6 +134,7 @@ export default function Graphs() {
               <Bar dataKey="avg" fill="#3b82f6" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+          </div>
         )}
       </div>
     </div>
