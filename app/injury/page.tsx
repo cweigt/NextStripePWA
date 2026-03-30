@@ -191,6 +191,10 @@ export default function InjuryPage() {
     tab === 'recovered' ? i.status === 'Recovered' : i.status !== 'Recovered'
   );
 
+  if (!user) {
+    return <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view your injury log.</div>;
+  }
+
   return (
     <div className="min-h-screen pb-24">
       {/* Header */}

@@ -114,7 +114,10 @@ export default function TrainingPage() {
   };
 
   if (!user) {
-    return <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view training log.</div>;
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view your training log.</div>
+    );
+
   }
 
   return (

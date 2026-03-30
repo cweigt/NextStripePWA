@@ -86,17 +86,10 @@ export default function AccountSettingsPage() {
 
   if (loading) {
     return <div className="flex items-center justify-center h-screen text-gray-400">Loading…</div>;
-  }
+  };
 
   if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen gap-4">
-        <p className="text-gray-500">Please sign in to view your account.</p>
-        <Link href="/auth" className="px-6 py-2.5 bg-blue-500 text-white rounded-lg text-sm font-semibold">
-          Sign In
-        </Link>
-      </div>
-    );
+    return <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view your settings.</div>;
   }
 
   return (

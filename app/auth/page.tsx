@@ -6,6 +6,7 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   updateProfile,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -31,8 +32,14 @@ export default function AuthPage() {
     try {
       if (mode === 'signin') {
         await signInWithEmailAndPassword(auth, email, password);
+        //if email isn't verified and user clicks sign in
+        if(!auth.currentUser?.emailVerified) {
+          setError("Email not verified, please verify to sign in!");
+          await auth.signOut(); //sign out so they can't get to other pages
+          return; 
+        }
         router.push('/');
-      } else if (mode === 'signup') {
+      } else if (mode === 'signup') { //for creating the account if sign in fails
         const pw = password;
         if (pw.length < 10) { setError('Password must be at least 10 characters.'); return; }
         if (!/[A-Z]/.test(pw)) { setError('Password must contain an uppercase letter.'); return; }
@@ -42,7 +49,10 @@ export default function AuthPage() {
 
         const cred = await createUserWithEmailAndPassword(auth, email, pw);
         if (displayName) await updateProfile(cred.user, { displayName });
-        router.push('/');
+        await sendEmailVerification(cred.user);
+        setMessage(`Verification email sent. Please verify, and then sign in. 
+          If you don't see the email in your inbox, please check your spam folder.`);
+        setMode('signin'); //kicks it back to sign in page
       } else {
         await sendPasswordResetEmail(auth, email);
         setMessage('Password reset email sent! Check your inbox.');
