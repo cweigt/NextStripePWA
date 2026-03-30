@@ -1,8 +1,17 @@
+'use client'
+
 import Graphs from '@/components/Graphs';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+import { auth, db } from '@/lib/firebase';
 
 export default function AnalyticsPage() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view analytics.</div>;
+  }
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 overflow-x-hidden">
       <div className="mb-6">

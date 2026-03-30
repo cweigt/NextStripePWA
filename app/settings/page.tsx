@@ -7,6 +7,10 @@ import Link from 'next/link';
 export default function SettingsPage() {
   const { user } = useAuth();
 
+  if (!user) {
+    return <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view settings.</div>;
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 page-enter-up">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Settings</h1>
