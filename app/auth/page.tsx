@@ -50,8 +50,7 @@ export default function AuthPage() {
         const cred = await createUserWithEmailAndPassword(auth, email, pw);
         if (displayName) await updateProfile(cred.user, { displayName });
         await sendEmailVerification(cred.user);
-        setMessage(`Verification email sent. Please verify, and then sign in. 
-          If you don't see the email in your inbox, please check your spam folder.`);
+        setMessage('Verification email sent. Please verify, and then sign in.');
         setMode('signin'); //kicks it back to sign in page
       } else {
         await sendPasswordResetEmail(auth, email);
