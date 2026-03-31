@@ -93,7 +93,7 @@ export default function AccountSettingsPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 page-enter-right">
+    <div className="max-w-3xl mx-auto px-4 py-8 page-enter-right">
       {/* Back button */}
       <Link
         href="/settings"

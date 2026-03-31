@@ -11,6 +11,7 @@ export default function DebugPage() {
   const {isDev, loading} = useAuth();
   const router = useRouter();
 
+  //this makes sure that if the user is NOT dev account, that it pushes them away from protected pages
   useEffect(() => {
     if(!loading && !isDev){
       router.replace('/')

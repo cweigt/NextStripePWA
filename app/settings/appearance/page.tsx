@@ -33,7 +33,7 @@ export default function AppearancePage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 page-enter-right">
+    <div className="max-w-3xl mx-auto px-4 py-8 page-enter-right">
       <Link
         href="/settings"
         className="flex items-center gap-1.5 text-sm text-blue-500 hover:text-blue-600 mb-6"

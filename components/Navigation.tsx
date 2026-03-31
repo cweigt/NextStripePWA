@@ -29,7 +29,7 @@ const NAV_ITEMS = [
   { href: '/debug', label: 'Debug Logs', icon: Bug}
 ];
 
-const MOBILE_HIDDEN_ROUTES = new Set(['/training', '/analytics', '/injury']);
+const MOBILE_HIDDEN_ROUTES = new Set(['/training', '/analytics', '/injury', '/debug']);
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -56,19 +56,24 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
           {navItems.map(({ href, label, icon: Icon }) => {
             const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
             return (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  'nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium',
-                  active
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              <div key={href}>
+                <Link
+                  href={href}
+                  className={cn(
+                    'nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium',
+                    active
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  )}
+                >
+                  <Icon size={18} />
+                  {label}
+                </Link>
+
+                {href === '/settings' && (
+                  <div className="my-3 border-t border-gray-200 dark:border-gray-800" />
                 )}
-              >
-                <Icon size={18} />
-                {label}
-              </Link>
+              </div>
             );
           })}
         </nav>
