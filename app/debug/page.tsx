@@ -12,12 +12,12 @@ export default function DebugPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if(!loading && isDev){
+    if(!loading && !isDev){
       router.replace('/')
     }
   }, [loading, isDev, router]);
   
-  if(!loading || !isDev) return null;
+  if(loading || !isDev) return null;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
