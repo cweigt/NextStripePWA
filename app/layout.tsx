@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import Navigation from '@/components/Navigation';
+import LogProvider from '@/contexts/LogContext';
 
 export const metadata: Metadata = {
   title: 'NextStripe',
@@ -42,7 +43,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <AuthProvider>
-          <Navigation>{children}</Navigation>
+          {/* LogProvider intercepts console.error, console.warn, and uncaught
+              errors app-wide and writes them to Realtime Database for the debug page */}
+          <LogProvider>
+            <Navigation>{children}</Navigation>
+          </LogProvider>
         </AuthProvider>
       </body>
     </html>
