@@ -5,6 +5,11 @@ node_modules/
 .next/
 out/
 
+# next-pwa / Workbox generated assets (generated at build time)
+public/sw.js
+public/workbox-*.js
+public/swe-worker-*.js
+
 # Environment variables
 .env
 .env.local
