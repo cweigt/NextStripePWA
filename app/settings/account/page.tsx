@@ -2,6 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { auth, db } from '@/lib/firebase';
+import { logEntry } from '@/lib/logger';
 import { deleteUser, signOut } from 'firebase/auth';
 import { get, ref, set } from 'firebase/database';
 import { ArrowLeft, ChevronRight, LogOut, Trash2, User } from 'lucide-react';
@@ -70,6 +71,7 @@ export default function AccountSettingsPage() {
   };
 
   const handleSignOut = async () => {
+    logEntry('info', `Sign out initiated: ${user?.email}`, 'AccountSettings');
     await signOut(auth);
     router.push('/auth');
   };
@@ -77,6 +79,7 @@ export default function AccountSettingsPage() {
   const handleDeleteAccount = async () => {
     if (!user || deleteInput !== 'DELETE') return;
     try {
+      logEntry('info', `Account deleted: ${user.email}`, 'AccountSettings');
       await deleteUser(user);
       router.push('/auth');
     } catch {

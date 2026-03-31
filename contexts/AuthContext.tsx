@@ -1,6 +1,7 @@
 'use client';
 
 import { auth } from '@/lib/firebase';
+import { logEntry } from '@/lib/logger';
 import { User, onAuthStateChanged, getIdTokenResult } from 'firebase/auth';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -27,9 +28,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(firebaseUser);
         //strictly true or false claim
         setIsDev(!!tokenResult.claims.developer);
+        logEntry('info', `Signed in: ${firebaseUser.email}`, 'AuthContext');
       } else {
         setUser(null);
         setIsDev(false);
+        logEntry('info', 'Signed out', 'AuthContext');
       }
       setLoading(false);
     });
