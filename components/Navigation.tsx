@@ -12,6 +12,7 @@ import {
   Settings,
   Target,
   Bandage,
+  Bug
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -25,13 +26,21 @@ const NAV_ITEMS = [
   { href: '/challenges', label: 'Challenges', icon: Target },
   { href: '/analytics', label: 'Analytics', icon: BarChart2 },
   { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/debug', label: 'Debug Logs', icon: Bug}
 ];
 
 const MOBILE_HIDDEN_ROUTES = new Set(['/training', '/analytics', '/injury']);
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { user, loading } = useAuth();
+  const { user, loading, isDev } = useAuth();
+  //filter keeps item when callback returns true
+  //creating a new navItems list based on user
+  const navItems = NAV_ITEMS.filter((item) => {
+    //if isDev == false, then it doesn't show up in filter
+    if (item.href === '/debug') return isDev;
+    else return true; //if the href != /debug
+  });
 
   return (
     <div className="flex min-h-screen">
@@ -44,7 +53,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 
         {/* Nav links */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+          {navItems.map(({ href, label, icon: Icon }) => {
             const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
             return (
               <Link
@@ -89,7 +98,9 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
       {/* Bottom tabs — mobile only */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-40 pb-safe">
         <div className="flex items-center justify-around h-16 pb-2">
-          {NAV_ITEMS.filter(({ href }) => !MOBILE_HIDDEN_ROUTES.has(href)).map(({ href, label, icon: Icon }) => {
+          {navItems
+            .filter(({ href }) => !MOBILE_HIDDEN_ROUTES.has(href))
+            .map(({ href, label, icon: Icon }) => {
             const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
             return (
               <Link
