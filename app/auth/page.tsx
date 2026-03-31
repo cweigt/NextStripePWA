@@ -1,6 +1,7 @@
 'use client';
 
 import { auth } from '@/lib/firebase';
+import { logEntry } from '@/lib/logger';
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -50,6 +51,7 @@ export default function AuthPage() {
         const cred = await createUserWithEmailAndPassword(auth, email, pw);
         if (displayName) await updateProfile(cred.user, { displayName });
         await sendEmailVerification(cred.user);
+        logEntry('info', `Account created: ${cred.user.email}`, 'AuthPage');
         setMessage('Verification email sent. Please verify, and then sign in.');
         setMode('signin'); //kicks it back to sign in page
       } else {
