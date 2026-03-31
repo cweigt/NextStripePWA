@@ -242,7 +242,7 @@ export default function InjuryPage() {
         </div>
       </div>
 
-      <div className="px-4 pt-5 space-y-3 mx-auto" style={{ maxWidth: '800px' }}>
+      <div className="px-4 pt-5 space-y-3 mx-auto" style={{ maxWidth: '950px' }}>
         {loading ? (
           <p className="text-center text-gray-400 text-sm pt-16">Loading...</p>
         ) : visibleInjuries.length === 0 ? (

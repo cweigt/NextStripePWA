@@ -13,7 +13,7 @@ export default function AnalyticsPage() {
     return <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view analytics.</div>;
   }
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 overflow-x-hidden">
+    <div className="max-w-4xl mx-auto px-4 py-8 overflow-x-hidden">
       <div className="mb-6">
         <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3">
           <ChevronLeft size={16} /> Back to Dashboard
