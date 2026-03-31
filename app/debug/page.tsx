@@ -1,11 +1,23 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, Bug } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter} from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function DebugPage() {
   const [activeTab, setActiveTab] = useState('All');
+  const {isDev, loading} = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if(!loading && isDev){
+      router.replace('/')
+    }
+  }, [loading, isDev, router]);
+  
+  if(!loading || !isDev) return null;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
