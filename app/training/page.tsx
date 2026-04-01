@@ -120,20 +120,23 @@ export default function TrainingPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8" ref={scrollRef}>
+    <div className="min-h-screen pb-24" ref={scrollRef}>
       {/* Header */}
-      <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3">
-        <ChevronLeft size={16} /> Back to Dashboard
-      </Link>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Training Log</h1>
-        <button
-          onClick={() => setAddOpen(true)}
-          className="flex items-center gap-1.5 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
-        >
-          <Plus size={16} /> Add Session
-        </button>
+      <div className="bg-white border-b border-gray-100 px-4 pt-14 pb-0 sticky top-0 z-10">
+        <div className="flex items-center gap-3 mb-3">
+          <Link href="/" className="p-1.5 rounded-full hover:bg-gray-100">
+            <ChevronLeft size={20} className="text-gray-600" />
+          </Link>
+          <h1 className="text-xl font-bold text-gray-900">Training Log</h1>
+          <button
+            onClick={() => setAddOpen(true)}
+            className="ml-auto flex items-center gap-1.5 bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
+          >
+            <Plus size={16} /> Add Session
+          </button>
+        </div>
       </div>
+      <div className="max-w-5xl mx-auto px-4 py-8">
 
       {/* Filter bar */}
       <div className="mb-4">
@@ -236,6 +239,7 @@ export default function TrainingPage() {
 
       <AddSessionModal isOpen={addOpen} onClose={() => setAddOpen(false)} onSave={handleSave} />
       <EditSessionModal session={editing} onClose={() => setEditing(null)} onSave={handleUpdate} onDelete={handleDelete} />
+      </div>
     </div>
   );
 }

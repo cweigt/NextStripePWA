@@ -12,7 +12,8 @@ import {
   Settings,
   Target,
   Bandage,
-  Bug
+  Bug,
+  DatabaseZap,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -26,10 +27,12 @@ const NAV_ITEMS = [
   { href: '/challenges', label: 'Challenges', icon: Target },
   { href: '/analytics', label: 'Analytics', icon: BarChart2 },
   { href: '/settings', label: 'Settings', icon: Settings },
-  { href: '/debug', label: 'Debug Logs', icon: Bug}
+  { href: '/debug', label: 'Debug Logs', icon: Bug},
+  { href: '/data', label: 'Data Actions', icon: DatabaseZap}
 ];
 
-const MOBILE_HIDDEN_ROUTES = new Set(['/training', '/analytics', '/injury', '/debug']);
+const MOBILE_HIDDEN_ROUTES = new Set(['/training', '/analytics', '/injury', '/debug', '/data']);
+const DEV_ROUTES = new Set(['/debug', '/data']);
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -38,7 +41,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
   //creating a new navItems list based on user
   const navItems = NAV_ITEMS.filter((item) => {
     //if isDev == false, then it doesn't show up in filter
-    if (item.href === '/debug') return isDev;
+    if (DEV_ROUTES.has(item.href)) return isDev;
     else return true; //if the href != /debug
   });
 

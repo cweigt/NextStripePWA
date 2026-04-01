@@ -13,15 +13,18 @@ export default function AnalyticsPage() {
     return <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view analytics.</div>;
   }
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 overflow-x-hidden">
-      <div className="mb-6">
-        <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3">
-          <ChevronLeft size={16} /> Back to Dashboard
-        </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
-        <p className="text-sm text-gray-500 mt-1">Insights into your training patterns</p>
+    <div className="min-h-screen pb-24 overflow-x-hidden">
+      <div className="bg-white border-b border-gray-100 px-4 pt-14 pb-3 sticky top-0 z-10">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="p-1.5 rounded-full hover:bg-gray-100">
+            <ChevronLeft size={20} className="text-gray-600" />
+          </Link>
+          <h1 className="text-xl font-bold text-gray-900">Analytics</h1>
+        </div>
       </div>
-      <Graphs />
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <Graphs />
+      </div>
     </div>
   );
 }
