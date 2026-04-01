@@ -185,6 +185,7 @@ export default function InjuryPage() {
   ) => setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
   const activeCount = injuries.filter((i) => i.status === 'Active' || i.status === 'Recovering').length;
+  const recoveredCount = injuries.filter((i) => i.status === 'Recovered').length;
   const [tab, setTab] = useState<'active' | 'recovered'>('active');
 
   const visibleInjuries = injuries.filter((i) =>
@@ -238,6 +239,11 @@ export default function InjuryPage() {
             }`}
           >
             Recovered
+            {recoveredCount > 0 && (
+              <span className="ml-1.5 bg-green-100 text-green-600 text-xs font-semibold px-1.5 py-0.5 rounded-full">
+                {recoveredCount}
+              </span>
+            )}
           </button>
         </div>
       </div>

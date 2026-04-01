@@ -11,6 +11,7 @@ import removeDataLogic from '@/lib/remove';
 export default function DataPage() {
   const [populating, setPopulating] = useState(false);
   const [removing, setRemoving] = useState(false);
+  const [message, setMessage] = useState('');
 
   const { isDev, loading, user } = useAuth();
   const router = useRouter();
@@ -24,12 +25,12 @@ export default function DataPage() {
 
   async function handlePopulate() {
     setPopulating(true);
+    setMessage('');
     try {
-      // TODO: populate example data
       if (user?.uid) {
         await populateDataLogic(user.uid);
       }
-      //include an affirmative alert
+      setMessage('Example data populated successfully!');
     } finally {
       setPopulating(false);
     }
@@ -37,13 +38,12 @@ export default function DataPage() {
 
   async function handleRemove() {
     setRemoving(true);
+    setMessage('');
     try {
-      // TODO: remove example data
       if (user?.uid) {
-        removeDataLogic(user.uid);
+        await removeDataLogic(user.uid);
+        setMessage('Example data removed successfully!');
       }
-
-      //include an affirmative alert
     } finally {
       setRemoving(false);
     }
@@ -86,6 +86,9 @@ export default function DataPage() {
             <Trash2 size={15} />
             {removing ? 'Removing…' : 'Remove Example Data'}
           </button>
+          {message && (
+            <p className="px-5 pb-5 text-sm text-green-600 font-medium">{message}</p>
+          )}
         </div>
       </div>
       </div>
