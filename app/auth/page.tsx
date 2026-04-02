@@ -52,11 +52,11 @@ export default function AuthPage() {
         if (displayName) await updateProfile(cred.user, { displayName });
         await sendEmailVerification(cred.user);
         logEntry('info', `Account created: ${cred.user.email}`, 'AuthPage');
-        setMessage('Verification email sent. Please verify, and then sign in.');
+        setMessage(`Verification email sent. Please verify, and then sign in. If it isn't in your inbox, please check your spam.`);
         setMode('signin'); //kicks it back to sign in page
       } else {
         await sendPasswordResetEmail(auth, email);
-        setMessage('Password reset email sent! Check your inbox.');
+        setMessage(`Password reset email sent! Please check your spam if it isn't in your inbox.`);
       }
     } catch (err: any) {
       setError(err.message?.replace('Firebase: ', '') ?? 'Something went wrong.');

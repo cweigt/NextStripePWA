@@ -1,15 +1,28 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { ChevronRight, Palette, User } from 'lucide-react';
+import { ChevronRight, Mail, Palette, User } from 'lucide-react';
+import { useState } from 'react';
 import Link from 'next/link';
+import {
+  sendEmailVerification,
+} from 'firebase/auth';
 
 export default function SettingsPage() {
   const { user } = useAuth();
+  const [emailSent, setEmailSent] = useState(false);
+
+  async function requestEmailVerification(){
+    //the user object already holds the email address
+    if(!user) return;
+    await sendEmailVerification(user);
+    setEmailSent(true);
+  }
 
   if (!user) {
     return <div className="flex items-center justify-center h-screen text-gray-400">Please sign in to view settings.</div>;
   }
+
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 page-enter-up">
@@ -45,6 +58,23 @@ export default function SettingsPage() {
           </div>
           <ChevronRight size={16} className="text-gray-400 flex-shrink-0" />
         </Link>
+      </div>
+
+      <div className="h-px bg-gray-100 mx-0 my-4" />
+
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="flex items-center gap-4 px-5 py-4">
+          <button
+            onClick={() => requestEmailVerification()}
+            className="flex items-center gap-3 bg-green-100 hover:bg-green-500 transition-colors rounded-xl px-4 py-2.5 flex-shrink-0 group"
+          >
+            <Mail size={17} className="text-green-600 group-hover:text-white transition-colors" />
+            <span className="text-sm font-semibold text-green-700 group-hover:text-white transition-colors">Request verification email</span>
+          </button>
+          {emailSent && (
+            <p className="text-sm text-green-600 flex-1">Verification email sent! Please check spam if it isn't in your inbox.</p>
+          )}
+        </div>
       </div>
     </div>
   );
