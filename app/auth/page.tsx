@@ -19,6 +19,7 @@ export default function AuthPage() {
   const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -42,6 +43,8 @@ export default function AuthPage() {
         router.push('/');
       } else if (mode === 'signup') { //for creating the account if sign in fails
         const pw = password;
+        const cpw = confirmPassword;
+        if (pw !== cpw) { setError('Passwords must match.'); return; }
         if (pw.length < 10) { setError('Password must be at least 10 characters.'); return; }
         if (!/[A-Z]/.test(pw)) { setError('Password must contain an uppercase letter.'); return; }
         if (!/[a-z]/.test(pw)) { setError('Password must contain a lowercase letter.'); return; }
@@ -132,9 +135,21 @@ export default function AuthPage() {
                 className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {mode === 'signup' && (
-                <p className="text-xs text-gray-400 mt-1">
-                  10+ chars, uppercase, lowercase, number, special character
-                </p>
+                <>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 mt-4"> Confirm Password</label>
+                  <input
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••••"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+
+                  <p className="text-xs text-gray-400 mt-1">
+                    10+ chars, uppercase, lowercase, number, special character
+                  </p>
+                </>
               )}
             </div>
           )}
