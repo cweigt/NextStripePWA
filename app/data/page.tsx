@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { ChevronLeft, Database, Trash2 } from 'lucide-react';
-import Link from 'next/link';
+import { Database, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import populateDataLogic from '@/lib/populate';
@@ -52,16 +51,11 @@ export default function DataPage() {
   if (loading || !isDev) return null;
 
   return (
-    <div className="min-h-screen pb-24">
-      <div className="bg-white border-b border-gray-100 px-4 pt-14 pb-3 sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <Link href="/" className="p-1.5 rounded-full hover:bg-gray-100">
-            <ChevronLeft size={20} className="text-gray-600" />
-          </Link>
-          <h1 className="text-xl font-bold text-gray-900">Data Management</h1>
-        </div>
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Data Actions</h1>
+        <p className="text-sm text-gray-500 mt-1">Populate or remove example data for development and testing</p>
       </div>
-      <div className="max-w-5xl mx-auto px-4 py-8">
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="px-5 py-3 border-b border-gray-100">
@@ -90,7 +84,6 @@ export default function DataPage() {
             <p className="px-5 pb-5 text-sm text-green-600 font-medium">{message}</p>
           )}
         </div>
-      </div>
       </div>
     </div>
   );

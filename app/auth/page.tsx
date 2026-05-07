@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 type Mode = 'signin' | 'signup' | 'reset';
 
@@ -24,6 +25,8 @@ export default function AuthPage() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPasswordSIGNIN, setShowPasswordSIGNIN] = useState(false);
+  const [showPasswordSIGNUPCONFIRM, setShowPasswordSIGNUPCONFIRM] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,27 +127,48 @@ export default function AuthPage() {
           </div>
 
           {mode !== 'reset' && (
+            //both the sign up and sign in page share the same "Password" variable
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <div className="relative">
+                <input
+                  type={showPasswordSIGNIN ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordSIGNIN(!showPasswordSIGNIN)} //((v) => !v) 
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  tabIndex={-1}
+                >
+                  {showPasswordSIGNIN ? <Eye size={16} /> : <EyeOff size={16} />}
+                </button>
+              </div>
               {mode === 'signup' && (
                 <>
                   <label className="block text-sm font-medium text-gray-700 mb-1 mt-4"> Confirm Password</label>
-                  <input
-                    type="password"
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="••••••••••"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPasswordSIGNUPCONFIRM ? 'text' : 'password'}
+                      required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••••"
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswordSIGNUPCONFIRM((v) => !v)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      tabIndex={-1}
+                    >
+                      {showPasswordSIGNUPCONFIRM ? <Eye size={16} /> : <EyeOff size={16} />}
+                    </button>
+                  </div>
 
                   <p className="text-xs text-gray-400 mt-1">
                     10+ chars, uppercase, lowercase, number, special character
